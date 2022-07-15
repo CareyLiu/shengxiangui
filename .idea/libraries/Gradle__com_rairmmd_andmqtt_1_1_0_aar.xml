@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: com.rairmmd:andmqtt:1.1.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c5541ca551b1e8b42e262d5e61f80324/jetified-andmqtt-1.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c5541ca551b1e8b42e262d5e61f80324/jetified-andmqtt-1.1.0/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rairmmd/andmqtt/1.1.0/f49945f980640384af2f3b45c772973edbc7a14d/andmqtt-1.1.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.rairmmd/andmqtt/1.1.0/44d939c6c60a318d2a9a4cf36fb63a81a9c1dd86/andmqtt-1.1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

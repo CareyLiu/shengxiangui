@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
+        
+        <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        	
+        	
+        	<Button
+            	android:id="@+id/btAllWinner"
+            	android:textSize="30dp"
+            	android:textAllCaps="false"
+            	android:layout_width="fill_parent"
+            	android:layout_height="wrap_content"
+            	android:text="全志系列：A20、A40、A64、A83   /dev/ttyS2" />
+        </LinearLayout>
+        
+        
+         <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        	
+        	
+        	<Button
+            	android:id="@+id/bt328"
+            	android:textSize="30dp"
+            	android:textAllCaps="false"
+            	android:layout_width="fill_parent"
+            	android:layout_height="wrap_content"
+            	android:text="328系列：3288、328e、328s    /dev/ttyS3" />
+        </LinearLayout>
+        
+         
+         <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        	
+        	
+        	<Button
+            	android:id="@+id/bt339"
+            	android:textSize="30dp"
+            	android:textAllCaps="false"
+            	android:layout_width="fill_parent"
+            	android:layout_height="wrap_content"
+            	android:text="339系列：339   /dev/ttyS4" />
+        </LinearLayout>
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+
+
+			<Button
+				android:id="@+id/bt972"
+				android:textSize="30dp"
+				android:textAllCaps="false"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="972系列：972   /dev/ttyS3" />
+		</LinearLayout>
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+
+
+			<Button
+				android:id="@+id/bt3568"
+				android:textSize="30dp"
+				android:textAllCaps="false"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="3568系列：3568   /dev/ttyS4" />
+		</LinearLayout>
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+
+
+			<Button
+				android:id="@+id/bt312"
+				android:textSize="30dp"
+				android:textAllCaps="false"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="312系列：312   /dev/ttyS0" />
+		</LinearLayout>
+
+
+
+
+		<LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        	<TextView
+            	android:id="@+id/textAbout"
+            	android:gravity="center"
+           	 	android:textSize="30dp"
+            	android:layout_width="wrap_content"
+            	android:layout_height="wrap_content"
+            	android:text="卓策定时开机测试,请务必选择正确的主板类型！" />
+        	
+        </LinearLayout>
+        
+    </LinearLayout>
+
+</RelativeLayout>

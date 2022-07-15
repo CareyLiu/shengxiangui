@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@mipmap/bg">
+
+    </LinearLayout>
+
+    <RelativeLayout
+
+        android:id="@+id/rl_tupian"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/banner_2">
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_tupian"
+        android:layout_marginTop="35dp">
+
+
+        <RelativeLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_zimu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="WELCOME   TO   USE"
+                android:textColor="#ff0368f2"
+                android:textSize="27sp" />
+
+            <TextView
+                android:id="@+id/tv_hanzi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_zimu"
+                android:layout_centerHorizontal="true"
+                android:text="欢迎使用喜澜科技存取柜"
+                android:textColor="#ff0368f2"
+                android:textSize="20sp" />
+
+            <LinearLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_hanzi"
+                android:layout_centerHorizontal="true">
+
+
+                <RelativeLayout
+
+                    android:id="@+id/rl_cunbao"
+                    android:layout_width="220dp"
+                    android:layout_height="220dp"
+                    android:layout_marginTop="44dp"
+                    android:background="@drawable/item_biankuang">
+
+                    <ImageView
+                        android:layout_centerInParent="true"
+                        android:id="@+id/iv_erweima"
+                        android:layout_width="210dp"
+                        android:layout_height="210dp"
+                        android:layout_centerHorizontal="true"></ImageView>
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <LinearLayout
+            android:id="@+id/ll_fanhui"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="返回"
+                android:textColor="#ffffff"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/fanhui_1" />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+</RelativeLayout>

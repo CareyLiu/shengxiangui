@@ -1,0 +1,20 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion Integer.parseInt(compileSdkVers)
+    buildToolsVersion buildToolsVers
+    compileOptions.encoding = "UTF-8"
+
+    defaultConfig {
+        minSdkVersion minSdkVers
+        targetSdkVersion Integer.parseInt(targetSdkVers)
+        versionCode 22
+        versionName '2.7.1'
+    }
+
+    compileOptions {
+        sourceCompatibility sourceCompatibilityVersion
+        targetCompatibility appTargetCompatibilityVersion
+    }
+}
+

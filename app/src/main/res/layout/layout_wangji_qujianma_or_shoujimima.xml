@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/bg">
+
+
+    <RelativeLayout
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:id="@+id/rl_qujianma"
+        android:layout_width="470dp"
+        android:layout_height="282dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="212dp"
+        android:background="@mipmap/tishi_bg">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="42dp"
+            android:layout_marginBottom="13dp"
+            android:text="管理员电话：18888888888"
+            android:textColor="#ffffffff"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:id="@+id/rl_shoujimima"
+        android:layout_width="470dp"
+        android:layout_height="282dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="212dp"
+        android:background="@mipmap/tishi_2">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="42dp"
+            android:layout_marginBottom="13dp"
+            android:text="管理员电话：18888888888"
+            android:textColor="#ffffffff"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_fanhuishouye"
+        android:layout_width="470dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="53dp"
+        android:background="@drawable/background_lanse2">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_fanhuishouye"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:includeFontPadding="false"
+                android:text="返回首页"
+                android:textColor="#ffffffff"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_fanhuishouye"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:includeFontPadding="false"
+                android:text="Back to first page"
+                android:textColor="#ffffffff"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+
+        <TextView
+            android:id="@+id/tv_daojishifanhui"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="15dp"
+            android:text="60s"
+            android:textColor="#0368F2"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+
+</RelativeLayout>
