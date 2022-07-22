@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
 
+import static com.shengxiangui.cn.model.OperateClass.renYuanZhuagnTai;
+
 public class JieXiZhiLing {
 
     /**
@@ -40,9 +42,11 @@ public class JieXiZhiLing {
         if (notice.type == ConstanceValue.KAIMEN) {
 
             List<String> list = (List<String>) notice.content;
-            list.get(0);//柜门号
-            list.get(1);//身份
-            YingJianZhiLing.kaiGui(Integer.valueOf(list.get(0)));//开柜
+            list.get(1);//柜门号
+            list.get(2);//身份
+
+            renYuanZhuagnTai =  Integer.valueOf(list.get(2)+"")+"";
+            YingJianZhiLing.kaiGui(Integer.valueOf(list.get(1)));//开柜
 
 
             return list;

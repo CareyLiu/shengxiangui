@@ -9,6 +9,10 @@ import android.widget.Toast;
 
 import com.shengxiangui.cn.MyApp;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 //硬件的操作
 public class YingJianZhiLing {
 
@@ -88,6 +92,7 @@ public class YingJianZhiLing {
      */
     public static byte[] kaiGui(int guiMenHao) {
         byte[] DATA = new byte[1];
+
         return caoZuo(1, DATA);
     }
 
@@ -113,23 +118,31 @@ public class YingJianZhiLing {
      * @return
      */
     public static byte[] xiaChuanDianZiJiaQian(int menDiZhi, int jiaQianDiZhi, int jiaGe1,
-                                               int jiaGe2, int hanZiChuanChangDu, int hanZiChuanNeirong) {
-        byte[] DATA = new byte[6];
+                                               int jiaGe2, int hanZiChuanChangDu, String hanZiChuanNeirong) {
+        byte[] DATA = new byte[hanZiChuanChangDu / 2 + 5];
         DATA[0] = (byte) menDiZhi;
         DATA[1] = (byte) jiaQianDiZhi;
         DATA[2] = (byte) jiaGe1;
         DATA[3] = (byte) jiaGe2;
-        DATA[4] = (byte) hanZiChuanChangDu;
-        DATA[5] = (byte) hanZiChuanNeirong;
+        DATA[4] = (byte) hanZiChuanChangDu;//汉字串的长度
+
+
+        //41443823
+        DATA[5] = (byte) 41;//汉字串的内容
+        DATA[6] = (byte) 44;
+        DATA[7] = (byte) 38;
+        DATA[8] = (byte) 23;
 
 
         return caoZuo(3, DATA);
+
     }
 
 
     /**
      * 查询单个
-     * @param state 0正常取数据查询所有1查询单个 2查询所有
+     *
+     * @param state   0正常取数据查询所有1查询单个 2查询所有
      * @param menDiZh 地址，2号柜门
      * @return
      */
@@ -198,18 +211,19 @@ public class YingJianZhiLing {
 
         byte[] bytes = new byte[DATA.length + 5];
 
+        int i = 0;
 
         bytes[0] = touxinxi;
         bytes[1] = N;
         bytes[2] = ZLM;
 
-        for (int i = 3; i < DATA.length - 2; i++) {
+
             for (int j = 0; j < DATA.length; j++) {
-                bytes[i] = DATA[j];
+                bytes[i+3] = DATA[j];
             }
-        }
-        bytes[DATA.length + 4] = LRCH;
-        bytes[DATA.length + 5] = LRCL;
+
+        bytes[DATA.length + 3] = LRCH;
+        bytes[DATA.length + 4] = LRCL;
 
 
         return bytes;

@@ -2,7 +2,7 @@ package com.shengxiangui.cn.model;
 
 public class OperateClass {
 
-    public static String renYuanZhuagnTai;//人员状态 补货员和用户两种
+    public static String renYuanZhuagnTai="0";//人员状态 补货员和用户两种  1用户 2 补货员
     public static String menZhuangTai;//1开门 2关门
 
     /**
@@ -12,7 +12,6 @@ public class OperateClass {
      * 4.补货员：安卓屏开门响应
      * 5.补货员：关门时重量上传
      * 6.补货员：同步某个货道重量（开门时）
-     * 7.查询单个 8.查询所有
      *
      * @return
      */

@@ -166,8 +166,6 @@
         </RelativeLayout>
 
 
-
-
     </LinearLayout>
 
     <View
@@ -179,5 +177,98 @@
         android:visibility="gone">
 
     </View>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="30dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_monifasong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="模拟发送" />
+
+        <Button
+            android:id="@+id/btn_butong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="monikaimen"
+            android:text="模拟不同" />
+
+
+        <Button
+            android:id="@+id/btn_charu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="monikaimen"
+            android:text="模拟插入" />
+        <Button
+            android:id="@+id/btn_chaxun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="monikaimen"
+            android:text="模拟查询" />
+        <Button
+            android:id="@+id/btn_monikaimen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="monikaimen"
+            android:text="模拟开门成功" />
+
+
+        <Button
+            android:id="@+id/btn_guanmen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="monikaimen"
+            android:text="模拟关门成功" />
+
+        <Button
+            android:id="@+id/btn_moniqingling"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:onClick="moniqingling"
+            android:text="模拟清零" />
+
+        <Button
+            android:id="@+id/btn_monijiaozhun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:onClick="monijiaozhun"
+            android:text="模拟校准" />
+
+        <Button
+            android:id="@+id/btn_huowu_zhengchang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:onClick="huowu_zhengchang"
+            android:text="模拟单个货物重量变化" />
+
+        <Button
+            android:id="@+id/btn_huowu_dange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:onClick="suoyouhuowu"
+            android:text="模拟所有货物重量变化" />
+
+
+        <Button
+            android:id="@+id/btn_huowu_suoyou"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:onClick="suoyouhuowu"
+            android:text="模拟正常货物重量变化" />
+    </LinearLayout>
 
 </RelativeLayout>

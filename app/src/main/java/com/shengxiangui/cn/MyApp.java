@@ -1,20 +1,16 @@
 package com.shengxiangui.cn;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
+
 import android.app.Application;
-import android.app.Dialog;
+
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
+
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.usb.UsbManager;
-import android.os.Handler;
-import android.os.Message;
+
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
+
 
 import com.danikula.videocache.BuildConfig;
 import com.danikula.videocache.HttpProxyCacheServer;
@@ -22,6 +18,7 @@ import com.rairmmd.andmqtt.AndMqtt;
 import com.rairmmd.andmqtt.MqttConnect;
 import com.sample.Utils;
 import com.shengxiangui.mqtt.Addr;
+import com.shengxiangui.mqtt.DingYueMqtt;
 import com.shengxiangui.mqtt.DoMqttValue;
 import com.shengxiangui.table.DaoMaster;
 import com.shengxiangui.table.DaoSession;
@@ -52,17 +49,16 @@ public class MyApp extends Application {
     private static final String ACTION_USB_PERMISSION = "cn.wch.wchusbdriver.USB_PERMISSION";
     public static Context context;
 
-
-    public HashMap<Integer, Integer> hashMap = new HashMap<>();
+    public MyApp getInstance() {
+        return this;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
         KLog.init(BuildConfig.DEBUG, "[VideoCache]:");
-        doMqttValue = new DoMqttValue(getApplicationContext());
         setMqttConnect();
-
-        context = this;
+        doMqttValue = new DoMqttValue(getApplicationContext());
         MyApp.driver = new CH34xUARTDriver(
                 (UsbManager) getSystemService(Context.USB_SERVICE), this,
                 ACTION_USB_PERMISSION);
@@ -82,10 +78,7 @@ public class MyApp extends Application {
         DaoMaster daoMaster = new DaoMaster(db);
         // 3、创建数据库会话
         mSession = daoMaster.newSession();
-
         greenDaoManager = new GreenDaoManager(this);
-
-
     }
 
     // 供外接使用
@@ -120,7 +113,6 @@ public class MyApp extends Application {
                 MqttConnect builder = new MqttConnect();
                 builder.setClientId(UserId)//连接服务器
                         .setPort(9096)
-//                        .setPort(9093)
                         .setAutoReconnect(true)
                         .setCleanSession(true)
                         .setKeepAlive(60)
@@ -134,18 +126,17 @@ public class MyApp extends Application {
                     @Override
                     public void connectComplete(boolean reconnect, String serverURI) {
                         Log.i("Rair", "(MainActivity.java:29)-connectComplete:-&gt;连接完成");
+                        DingYueMqtt.hardWareMqtt();
                     }
 
                     @Override
                     public void connectionLost(Throwable cause) {
                         Log.i("Rair", "(MainActivity.java:34)-connectionLost:-&gt;连接丢失" + cause.getMessage().toString());
                         //UIHelper.ToastMessage(context, "网络不稳定持续连接中", Toast.LENGTH_SHORT);
-
                     }
 
                     @Override
                     public void messageArrived(String topic, MqttMessage message) throws Exception {
-
                         doMqttValue.doValue(getApplicationContext(), topic, message.toString());
                     }
 
@@ -180,72 +171,9 @@ public class MyApp extends Application {
         if (Urls.SERVER_URL.equals("https://shop.hljsdkj.com/")) {
             return "tcp://mqtt.hljsdkj.com";
         } else {
-            return "tcp://mqrn.hljsdkj.com";
+            return "tcp://mqtt.hljsdkj.com";
         }
-
     }
-
-    public void sendRx(int strValue, String strContent) {
-        Notice n = new Notice();
-        n.type = strValue;
-//                            n.content = message.toString();
-        n.content = strContent;
-        RxBus.getDefault().sendRx(n);
-    }
-
-
-    /**
-     * 获取App安装包信息
-     *
-     * @return
-     */
-    public PackageInfo getPackageInfo() {
-        PackageInfo info = null;
-        try {
-            info = getPackageManager().getPackageInfo(getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace(System.err);
-        }
-        if (info == null) info = new PackageInfo();
-        return info;
-    }
-
-    /**
-     * 获取App唯一标识
-     *
-     * @return
-     */
-    public String getAppId() {
-        String uniqueID = getProperty(AppConfig.CONF_APP_UNIQUEID);
-        if (TextUtils.isEmpty(uniqueID)) {
-            uniqueID = UUID.randomUUID().toString();
-            setProperty(AppConfig.CONF_APP_UNIQUEID, uniqueID);
-        }
-        return uniqueID;
-    }
-
-
-    public void setProperties(Properties ps) {
-        AppConfig.getAppConfig(this).set(ps);
-    }
-
-    public Properties getProperties() {
-        return AppConfig.getAppConfig(this).get();
-    }
-
-    public void setProperty(String key, String value) {
-        AppConfig.getAppConfig(this).set(key, value);
-    }
-
-    public String getProperty(String key) {
-        return AppConfig.getAppConfig(this).get(key);
-    }
-
-    /**
-     * 判断该进程是否是app进程
-     *
-     * @return
-     */
 
 
     public boolean isAppProcess() {

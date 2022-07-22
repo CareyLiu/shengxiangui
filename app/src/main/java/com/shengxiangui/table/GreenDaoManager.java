@@ -8,7 +8,7 @@ import java.util.List;
 
 public class GreenDaoManager {
     private Context mContext;
-    public WuPinXinXiMoelDao mGoodsModelDao;
+    public static WuPinXinXiMoelDao mGoodsModelDao;
 
     public GreenDaoManager(Context context) {
         this.mContext = context;
@@ -43,7 +43,6 @@ public class GreenDaoManager {
 
         //获取对象DAO
 
-
         //获取到所有实体类，并在内存中先处理好数据
         List<WuPinXinXiMoel> wuPinXinXiMoelList = mGoodsModelDao.loadAll();
         for (int i = 0; i < wuPinXinXiMoelList.size(); i++) {
@@ -59,15 +58,7 @@ public class GreenDaoManager {
     }
 
 
-    /**
-     * private String menDiZhi;//门地址
-     * private String jiaQianDiZhi;//价签地址
-     * private String zhongLiang1;//重量1
-     * private String zhongLiang2;//重量2
-     *
-     * @param menDiZhi
-     */
-    public void insertAllData(List<WuPinXinXiMoel> moelList) {
+    public static void insertAllData(List<WuPinXinXiMoel> moelList) {
         mGoodsModelDao.updateInTx(moelList);
 
     }

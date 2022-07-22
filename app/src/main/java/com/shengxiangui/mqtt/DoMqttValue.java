@@ -1,6 +1,7 @@
 package com.shengxiangui.mqtt;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.rairmmd.andmqtt.AndMqtt;
@@ -38,7 +39,7 @@ public class DoMqttValue {
         AndMqtt.getInstance().subscribe(new MqttSubscribe().setQos(2).setTopic(Addr.ccidAddr), new IMqttActionListener() {
             @Override
             public void onSuccess(IMqttToken asyncActionToken) {
-                Toast.makeText(context, "订阅成功", Toast.LENGTH_SHORT).show();
+                Log.i("rair", "订阅成功");
             }
 
             @Override
@@ -50,6 +51,7 @@ public class DoMqttValue {
 
     public void doValue(Context context, String topic, String message) {
 
+        Log.i("rair", message);
 
         if (message.charAt(0) == 'i') {
 
