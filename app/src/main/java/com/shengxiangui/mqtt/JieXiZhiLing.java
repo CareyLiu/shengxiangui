@@ -45,13 +45,13 @@ public class JieXiZhiLing {
             list.get(1);//柜门号
             list.get(2);//身份
 
-            renYuanZhuagnTai =  Integer.valueOf(list.get(2)+"")+"";
+            renYuanZhuagnTai = Integer.valueOf(list.get(2) + "") + "";
             YingJianZhiLing.kaiGui(Integer.valueOf(list.get(1)));//开柜
 
 
             return list;
 
-        } else if (notice.type == ConstanceValue.QINGLING) {
+        } else if (notice.type == ConstanceValue.QINGLING) {//清零功能
 
             List<String> list = (List<String>) notice.content;
             Integer data0 = Integer.valueOf(list.get(1));//门编号
@@ -59,15 +59,23 @@ public class JieXiZhiLing {
 
             YingJianZhiLing.xiaChuanQingLing(data0, data1);//清零功能
 
-
             return list;
 
         } else if (notice.type == ConstanceValue.JIAOZHUN) {
 
+            /**
+             *        list.add(String.valueOf(ConstanceValue.JIAOZHUN));
+             *                 list.add(menBianHao);
+             *                 list.add(chengPanBianHao);
+             *                 list.add(dangQianZhongLiang);
+             *                 list.add(jiaoZhunZhongLiang);
+             */
             List<String> list = (List<String>) notice.content;
-            Integer data0 = Integer.valueOf(list.get(0));//门编号
-            Integer data1 = Integer.valueOf(list.get(1));//秤盘编号
-            YingJianZhiLing.xiaChuanQingLing(data0, data1);//校准功能
+            Integer data0 = Integer.valueOf(list.get(1));//门编号
+            Integer data1 = Integer.valueOf(list.get(2));//秤盘编号
+            Integer data2 = Integer.valueOf(list.get(3));//当前重量
+            Integer data3 = Integer.valueOf(list.get(4));//校准重量
+            YingJianZhiLing.xiaChuanJiaoZhun(data0, data1, data3);//校准功能
             return list;
 
         } else if (notice.type == ConstanceValue.CHAXUNDANGE) {
@@ -76,11 +84,8 @@ public class JieXiZhiLing {
             Integer data0 = Integer.valueOf(list.get(0));//门编号
             Integer data1 = Integer.valueOf(list.get(1));//秤盘编号
 
-
             YingJianZhiLing.chaXunDanGe(1, data0);
             //访问接口上传实时重量
-
-            //  YingJianZhiLing.xiaChuanQingLing(data0, data1);//校准功能
 
             return list;
 
@@ -88,7 +93,15 @@ public class JieXiZhiLing {
             //访问接口上传实时重量
             List<String> list = (List<String>) notice.content;
             Integer data0 = Integer.valueOf(list.get(0));//门编号
-            YingJianZhiLing.chaXunDanGe(2, data0);
+            // YingJianZhiLing.chaXunDanGe(2, data0);
+
+
+            return list;
+        } else if (notice.type == ConstanceValue.CHAXUNSUOYOU) {
+            //访问接口上传实时重量
+            List<String> list = (List<String>) notice.content;
+            Integer data0 = Integer.valueOf(list.get(0));//门编号
+            // YingJianZhiLing.chaXunDanGe(2, data0);
 
 
             return list;

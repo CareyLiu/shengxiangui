@@ -14,12 +14,6 @@ class MainActivity : FragmentActivity() {
 
         val dm = resources.displayMetrics
 
-        val screenWidth = dm.widthPixels
-
-        val screenHeight = dm.heightPixels
-
-       // println("width" + screenWidth + "height" + screenHeight)
-
         if (savedInstanceState == null) {
             supportFragmentManager
                 .beginTransaction()
@@ -30,4 +24,6 @@ class MainActivity : FragmentActivity() {
 
 
     }
+
+
 }

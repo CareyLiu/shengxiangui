@@ -157,7 +157,14 @@ public class DoMqttValue {
 
                 Notice notice = new Notice();
                 notice.type = ConstanceValue.CHAXUNSUOYOU;
-                notice.content = list.add(String.valueOf(ConstanceValue.CHAXUNSUOYOU));
+                list.add(String.valueOf(ConstanceValue.CHAXUNSUOYOU));
+                notice.content = list;
+                RxBus.getDefault().sendRx(notice);
+            }else if (leixing.equals("M07")){
+                Notice notice = new Notice();
+                notice.type = ConstanceValue.GENGXINJIAQIAN;
+                list.add(String.valueOf(ConstanceValue.GENGXINJIAQIAN));
+                notice.content = list;
                 RxBus.getDefault().sendRx(notice);
             }
         } else if (message.charAt(0) == 'r') {

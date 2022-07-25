@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.shengxiangui.cn.MyApp;
+import com.shengxiangui.table.WuPinXinXiMoel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,12 +88,16 @@ public class YingJianZhiLing {
     //开柜操作
 
     /**
-     * @param guiMenHao 开柜门
+     * 开柜门
+     *
+     * @param guiMenHao        柜门号
+     * @param shiFouShiHuiYuan 是否是会员 1不是会员 2是会员
      * @return
      */
     public static byte[] kaiGui(int guiMenHao) {
         byte[] DATA = new byte[1];
-
+        DATA[0] = (byte) guiMenHao;
+        //   DATA[1] = (byte) shiFouShiHuiYuan;
         return caoZuo(1, DATA);
     }
 
@@ -117,27 +122,27 @@ public class YingJianZhiLing {
      * @param hanZiChuanNeirong 汉字码
      * @return
      */
-    public static byte[] xiaChuanDianZiJiaQian(int menDiZhi, int jiaQianDiZhi, int jiaGe1,
-                                               int jiaGe2, int hanZiChuanChangDu, String hanZiChuanNeirong) {
-        byte[] DATA = new byte[hanZiChuanChangDu / 2 + 5];
-        DATA[0] = (byte) menDiZhi;
-        DATA[1] = (byte) jiaQianDiZhi;
-        DATA[2] = (byte) jiaGe1;
-        DATA[3] = (byte) jiaGe2;
-        DATA[4] = (byte) hanZiChuanChangDu;//汉字串的长度
+    public static byte[] xiaChuanDianZiJiaQian(WuPinXinXiMoel wuPinXinXiMoel) {
+        byte[] DATA = new byte[wuPinXinXiMoel.getShangPinZhongWenBianMa().length() / 2 + 5];
+        DATA[0] = Byte.parseByte(wuPinXinXiMoel.getMenDiZhi());
+        DATA[1] = Byte.parseByte(wuPinXinXiMoel.getJiaQianDiZhi());
+        DATA[2] = Byte.parseByte(wuPinXinXiMoel.getShouJia());
+        DATA[3] = Byte.parseByte(wuPinXinXiMoel.getHuiYuanJia());
+        DATA[4] = (byte) wuPinXinXiMoel.getShangPinZhongWenBianMa().length();//汉字串的长度
 
 
-        //41443823
-        DATA[5] = (byte) 41;//汉字串的内容
-        DATA[6] = (byte) 44;
-        DATA[7] = (byte) 38;
-        DATA[8] = (byte) 23;
+        String str = wuPinXinXiMoel.getShangPinZhongWenBianMa().replaceAll("(.{2})", ":$1").substring(1);
 
+        String[] arr = str.split(":");
+
+        for (int i = 0; i < arr.length; i++) {
+            Log.i("YingJianZhiLing", arr[i]);
+            DATA[i + 5] = Byte.parseByte(arr[i]);
+        }
 
         return caoZuo(3, DATA);
 
     }
-
 
     /**
      * 查询单个
@@ -154,7 +159,6 @@ public class YingJianZhiLing {
         return caoZuo(6, DATA);
     }
 
-
     /**
      * 上传电子价签
      *
@@ -166,9 +170,39 @@ public class YingJianZhiLing {
         byte[] DATA = new byte[2];
         DATA[0] = (byte) menDiZhi;
         DATA[1] = (byte) jiaQianDiZhi;
+        return caoZuo(3, DATA);
+    }
+
+    /**
+     * 上传电子价签
+     *
+     * @param menDiZhi   门地址
+     * @param zhongLiang 重量
+     * @return
+     */
+    public static byte[] xiaChuanJiaoZhun(int menDiZhi, int chengPanBianHao, int zhongLiang) {
+        byte[] DATA = new byte[2];
+        DATA[0] = (byte) menDiZhi;
+        DATA[1] = (byte) chengPanBianHao;
+        DATA[2] = (byte) zhongLiang;
 
         return caoZuo(3, DATA);
     }
+
+    /**
+     * @param guiMenShuLiang   柜门数量
+     * @param biaoQianShuLiang 标签数量
+     * @return
+     */
+    public static byte[] xiaChuanPeiZhiBiao(int guiMenShuLiang, List<String> biaoQianShuLiang) {
+        byte[] DATA = new byte[biaoQianShuLiang.size() + 1];
+        DATA[0] = (byte) guiMenShuLiang;
+        for (int i = 0; i < biaoQianShuLiang.size(); i++) {
+            DATA[i + 1] = Byte.parseByte(biaoQianShuLiang.get(i));
+        }
+        return caoZuo(7, DATA);
+    }
+
 
     /**
      * @param ZLM  指令码
@@ -210,18 +244,14 @@ public class YingJianZhiLing {
     public static byte[] openDevice(byte touxinxi, byte N, byte ZLM, byte[] DATA, byte LRCH, byte LRCL) {
 
         byte[] bytes = new byte[DATA.length + 5];
-
         int i = 0;
-
         bytes[0] = touxinxi;
         bytes[1] = N;
         bytes[2] = ZLM;
 
-
-            for (int j = 0; j < DATA.length; j++) {
-                bytes[i+3] = DATA[j];
-            }
-
+        for (int j = 0; j < DATA.length; j++) {
+            bytes[i + 3] = DATA[j];
+        }
         bytes[DATA.length + 3] = LRCH;
         bytes[DATA.length + 4] = LRCL;
 

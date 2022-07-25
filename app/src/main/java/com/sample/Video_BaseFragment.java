@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
@@ -30,12 +31,17 @@ public class Video_BaseFragment extends Fragment implements CacheListener {
     ImageView cacheStatusImageView;
     VideoView videoView;
     ProgressBar progressBar;
+    RelativeLayout rlMain;
+    static Video_BaseFragment fragment = null;
 
     public static Fragment newInstance(String url) {
-        Video_BaseFragment fragment = new Video_BaseFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("url", url);
-        fragment.setArguments(bundle);
+        if (fragment == null) {
+            fragment = new Video_BaseFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("url", url);
+            fragment.setArguments(bundle);
+        }
+
         return fragment;
     }
 
@@ -57,6 +63,13 @@ public class Video_BaseFragment extends Fragment implements CacheListener {
         cacheStatusImageView = view.findViewById(R.id.cacheStatusImageView);
         videoView = view.findViewById(R.id.videoView);
         progressBar = view.findViewById(R.id.progressBar);
+        rlMain = view.findViewById(R.id.rl_main);
+        rlMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         view.findViewById(R.id.btStart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

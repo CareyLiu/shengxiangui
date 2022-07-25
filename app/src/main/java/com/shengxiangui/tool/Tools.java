@@ -298,4 +298,28 @@ public class Tools {
             return (int) (pxValue / scale + 0.5f);
         }
     }
+
+
+
+
+    public static byte[] intToShort(int num) {
+        // 以65535为例，转short = -1	-> 1111 1111 1111 1111
+        // 右移8位，转byte				-> 0000 0000 1111 1111	-> 1111 1111
+        // 转byte					-> 1111 1111
+        short n = (short) num;
+        byte[] b = new byte[2];
+        b[0] = (byte) (n >> 8);
+        b[1] = (byte) n;
+        return b;
+    }
+
+    public static int shortToInt(byte b0, byte b1) {
+        // 以65535[-1,-1]为例
+        // b[0]左移八位 -> 1111 1111	-> 1111 1111 0000 0000
+        // b[1] 位与0xff去除高位1		-> 0000 0000 1111 1111
+        // 位或					-> 1111 1111 1111 1111
+        // 位与去除高位1		-> 0000 0000 0000 0000 1111 1111 1111 1111
+        return (short) ((b0 << 8) | (b1 & 0xff)) & 0xffff;
+    }
+
 }

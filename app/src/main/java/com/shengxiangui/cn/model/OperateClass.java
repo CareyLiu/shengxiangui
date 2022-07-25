@@ -2,8 +2,9 @@ package com.shengxiangui.cn.model;
 
 public class OperateClass {
 
-    public static String renYuanZhuagnTai="0";//人员状态 补货员和用户两种  1用户 2 补货员
-    public static String menZhuangTai;//1开门 2关门
+    public static String renYuanZhuagnTai="1";//人员状态 补货员和用户两种  1用户 2 补货员
+    public static String menZhuangTai="1";//1开门 2关门
+    public static String menDiZhi = "2";//门地址
 
     /**
      * 1.用户：安卓屏开门响应
@@ -47,9 +48,9 @@ public class OperateClass {
         if (getOperateType().equals("1")) {//用户开门
 
             value = "2";
-        } else if (getOperateType().equals("4")) {//补货员开门
+        } else if (getOperateType().equals("4")) {//补货员
 
-            value = "6";
+            value = "5";
         }
         return value;
 

@@ -29,4 +29,6 @@ public interface ConstanceValue {
     int MONIJIAOZHUN = 0x100012;//模拟校准
     int MONITONGBUCHENGPAN = 0x100013;//模拟同步单个秤盘
     int MONITONGBUSUOYOUCHENGPAN = 0x100014;//模拟同步所有秤盘
+
+    int GENGXINJIAQIAN = 0x100015;//更新价签
 }

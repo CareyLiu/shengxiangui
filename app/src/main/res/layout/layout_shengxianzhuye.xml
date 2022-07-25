@@ -5,6 +5,7 @@
     android:background="@mipmap/shengxiangui_bg">
 
 
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -208,12 +209,14 @@
             android:layout_height="wrap_content"
             android:onClick="monikaimen"
             android:text="模拟插入" />
+
         <Button
             android:id="@+id/btn_chaxun"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="monikaimen"
             android:text="模拟查询" />
+
         <Button
             android:id="@+id/btn_monikaimen"
             android:layout_width="wrap_content"
@@ -251,7 +254,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:onClick="huowu_zhengchang"
-            android:text="模拟单个货物重量变化" />
+            android:text="模拟正常货物重量变化" />
 
         <Button
             android:id="@+id/btn_huowu_dange"
@@ -259,7 +262,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:onClick="suoyouhuowu"
-            android:text="模拟所有货物重量变化" />
+            android:text="模拟单个货物重量变化" />
 
 
         <Button
@@ -268,7 +271,61 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:onClick="suoyouhuowu"
-            android:text="模拟正常货物重量变化" />
+            android:text="模拟所有货物重量变化" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_moni_buhuoyuan_kaimen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="模拟发送_补货员开门" />
+
+        <Button
+            android:id="@+id/btn_moni_buhuoyuan_buhuo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="模拟发送_补货员补货" />
+
+        <Button
+            android:id="@+id/btn_moni_buhuoyuan_guanmen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="模拟发送_补货员关门" />
+
+        <Button
+            android:id="@+id/btn_moni_buhuoyuan_qingling"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="模拟发送_补货员清零" />
+
+        <Button
+            android:id="@+id/btn_moni_buhuoyuan_jiaozhun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="模拟发送_补货员校准" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/containerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+
     </LinearLayout>
 
 </RelativeLayout>

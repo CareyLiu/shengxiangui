@@ -54,6 +54,13 @@ public class GalleryVideoFragment extends Fragment implements CacheListener {
         super.onViewCreated(view, savedInstanceState);
         progressBar = view.findViewById(R.id.progressBar);
         videoView = view.findViewById(R.id.videoView);
+
+//        videoView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                getActivity().getSupportFragmentManager().beginTransaction().remove(Video_BaseFragment.newInstance(Video.ORANGE_13.url)).commit();
+//            }
+//        });
         if (getArguments() != null) {
             url = getArguments().getString("url");
         }
