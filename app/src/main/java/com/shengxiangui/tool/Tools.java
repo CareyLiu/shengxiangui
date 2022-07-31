@@ -1,20 +1,38 @@
 package com.shengxiangui.tool;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.os.Build;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
+import android.telephony.TelephonyManager;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.PopupWindow;
 
 
+import androidx.core.app.ActivityCompat;
+
+import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.Response;
+import com.shengxiangui.cn.ConstanceValue;
+import com.shengxiangui.cn.Urls;
+import com.shengxiangui.cn.config.AppResponse;
+import com.shengxiangui.cn.config.callback.JsonCallback;
+import com.shengxiangui.cn.model.PeiZhiBiaoModel;
+import com.shengxiangui.mqtt.YingJianZhiLing;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +46,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.shengxiangui.cn.Urls.SHENGXIANGUI_SHANGPIN;
+import static com.shengxiangui.cn.config.JiBenXinXi.device_ccid;
 
 
 public class Tools {
@@ -224,11 +245,13 @@ public class Tools {
 
     /**
      * 判断Activity是否Destroy
-     * @param activity
+     * <p>
+     * activity
+     *
      * @return
      */
     public static boolean isDestroy(Activity mActivity) {
-        if (mActivity== null || mActivity.isFinishing() || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && mActivity.isDestroyed())) {
+        if (mActivity == null || mActivity.isFinishing() || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && mActivity.isDestroyed())) {
             return true;
         } else {
             return false;
@@ -275,7 +298,6 @@ public class Tools {
     }
 
 
-
     /**
      * dp转px | px转dp
      */
@@ -300,8 +322,6 @@ public class Tools {
     }
 
 
-
-
     public static byte[] intToShort(int num) {
         // 以65535为例，转short = -1	-> 1111 1111 1111 1111
         // 右移8位，转byte				-> 0000 0000 1111 1111	-> 1111 1111
@@ -322,4 +342,72 @@ public class Tools {
         return (short) ((b0 << 8) | (b1 & 0xff)) & 0xffff;
     }
 
+    public static byte[] chuLiZiFu(String str) {
+        String[] arr = str.split("\\.");
+        byte[] bytes = new byte[2];
+
+
+        bytes[0] = Byte.parseByte(arr[0]);
+        bytes[1] = Byte.parseByte(arr[1]);
+        return bytes;
+    }
+
+
+    public static void getShouJiKaHao(Context context) {
+
+        getPhoneInfo(context);
+        //getPeiZhiBiaoNet(context, imei);
+    }
+
+    public static String getPhoneInfo(Context context) {
+
+        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+        StringBuffer sb = new StringBuffer();
+
+        //   sb.append("\nLine1Number = " + tm.getLine1Number());
+
+        sb.append("\nNetworkOperator = " + tm.getNetworkOperator());//移动运营商编号
+
+        sb.append("\nNetworkOperatorName = " + tm.getNetworkOperatorName());//移动运营商名称
+
+        sb.append("\nSimCountryIso = " + tm.getSimCountryIso());
+
+        sb.append("\nSimOperator = " + tm.getSimOperator());
+
+        sb.append("\nSimOperatorName = " + tm.getSimOperatorName());
+
+        sb.append("\nSimSerialNumber = " + tm.getSimSerialNumber());
+
+        sb.append("\nSubscriberId(IMSI) = " + tm.getSubscriberId());
+
+        return sb.toString();
+
+    }
+
+
+    //请求柜门配置表
+    private static void getPeiZhiBiaoNet(Context context, String sim_ccid) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("code", "100059");
+        map.put("key", Urls.key);
+        map.put("device_ccid", device_ccid);
+        map.put("sim_ccid", sim_ccid);
+        Gson gson = new Gson();
+        Log.e("map_data", gson.toJson(map));
+        OkGo.<AppResponse<PeiZhiBiaoModel.DataBean>>post(SHENGXIANGUI_SHANGPIN)
+                .tag(context)//
+                .upJson(gson.toJson(map))
+                .execute(new JsonCallback<AppResponse<PeiZhiBiaoModel.DataBean>>() {
+                    @Override
+                    public void onSuccess(Response<AppResponse<PeiZhiBiaoModel.DataBean>> response) {
+
+                    }
+
+                    @Override
+                    public void onError(Response<AppResponse<PeiZhiBiaoModel.DataBean>> response) {
+                        super.onError(response);
+                    }
+                });
+    }
 }

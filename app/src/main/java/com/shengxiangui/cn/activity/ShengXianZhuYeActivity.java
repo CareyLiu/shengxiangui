@@ -1,5 +1,6 @@
 package com.shengxiangui.cn.activity;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -7,20 +8,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
-import com.rairmmd.andmqtt.AndMqtt;
-import com.rairmmd.andmqtt.MqttPublish;
-import com.sample.Video;
-import com.sample.Video_BaseFragment;
 import com.shengxiangui.cn.ConstanceValue;
 import com.shengxiangui.cn.MyApp;
 import com.shengxiangui.cn.Notice;
@@ -32,32 +31,33 @@ import com.shengxiangui.cn.config.AppResponse;
 import com.shengxiangui.cn.config.callback.JsonCallback;
 import com.shengxiangui.cn.fragment.ShangPinFragment;
 import com.shengxiangui.cn.model.ChuLiShuJuClass;
+import com.shengxiangui.cn.model.GouMaiWuPinModel;
 import com.shengxiangui.cn.model.HuoHaoAndZhongLiangModel;
+import com.shengxiangui.cn.model.OperateClass;
+import com.shengxiangui.cn.model.PeiZhiBiaoModel;
 import com.shengxiangui.cn.model.ShangPinJieKouModel;
 import com.shengxiangui.cn.model.ShangPinLieBiaoModel;
 import com.shengxiangui.mqtt.Addr;
 import com.shengxiangui.mqtt.JieXiZhiLing;
+import com.shengxiangui.mqtt.MqttZhiLing;
 import com.shengxiangui.mqtt.YingJianZhiLing;
 import com.shengxiangui.table.GreenDaoManager;
 import com.shengxiangui.table.WuPinXinXiMoel;
+import com.shengxiangui.tool.GPS;
 import com.shengxiangui.tool.ShuJuMoNiUtils;
 import com.shengxiangui.tool.StreamUtil;
 import com.shengxiangui.tool.Tools;
-
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import pub.devrel.easypermissions.EasyPermissions;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -67,12 +67,9 @@ import static com.shengxiangui.cn.Urls.SHENGXIANGUI_SHANGPIN;
 import static com.shengxiangui.cn.config.JiBenXinXi.device_ccid;
 import static com.shengxiangui.cn.model.ChuLiShuJuClass.zhongLiangBianHua;
 import static com.shengxiangui.cn.model.OperateClass.getKaiMenHeRenYuanZhuangTai;
-import static com.shengxiangui.cn.model.OperateClass.getOperateType;
-import static com.shengxiangui.cn.model.OperateClass.menDiZhi;
-import static com.shengxiangui.cn.model.OperateClass.menZhuangTai;
-import static com.shengxiangui.cn.model.OperateClass.renYuanZhuagnTai;
+import static com.shengxiangui.tool.ShuJuMoNiUtils.moniqingling;
 
-public class ShengXianZhuYeActivity extends BaseActivity {
+public class ShengXianZhuYeActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks {
 
     @BindView(R.id.iv_bajiaoye)
     ImageView ivBajiaoye;
@@ -100,12 +97,47 @@ public class ShengXianZhuYeActivity extends BaseActivity {
     Button btnChaxun;
     @BindView(R.id.btn_butong)
     Button btnButong;
+    @BindView(R.id.iv_saomakaimen)
+    ImageView ivSaomakaimen;
+    @BindView(R.id.btn_monifasong)
+    Button btnMonifasong;
+    @BindView(R.id.btn_guanmen)
+    Button btnGuanmen;
+    @BindView(R.id.btn_moni_buhuoyuan_kaimen)
+    Button btnMoniBuhuoyuanKaimen;
+    @BindView(R.id.btn_moni_buhuoyuan_buhuo)
+    Button btnMoniBuhuoyuanBuhuo;
+    @BindView(R.id.btn_moni_buhuoyuan_guanmen)
+    Button btnMoniBuhuoyuanGuanmen;
+    @BindView(R.id.btn_moni_buhuoyuan_qingling)
+    Button btnMoniBuhuoyuanQingling;
+    @BindView(R.id.btn_moni_buhuoyuan_jiaozhun)
+    Button btnMoniBuhuoyuanJiaozhun;
+    @BindView(R.id.tv_zhangdanjiesuan)
+    TextView tvZhangdanjiesuan;
+    @BindView(R.id.containerView)
+    LinearLayout containerView;
+    @BindView(R.id.rlv_list)
+    RecyclerView rlvList;
+    List<GouMaiWuPinModel.DataBean.DataListBean> gouWuList;
+    @BindView(R.id.tv_zongjine)
+    TextView tvZongjine;
+    @BindView(R.id.btn_huiyuanka_kaimen)
+    Button btnHuiyuankaKaimen;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_shengxianzhuye);
         viewPager = findViewById(R.id.viewPager);
+
+        String[] perms = {
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.READ_SMS,
+                Manifest.permission.READ_PHONE_NUMBERS};
+        EasyPermissions.requestPermissions(ShengXianZhuYeActivity.this, "申请开启app需要的权限", 0, perms);
         if (YingJianZhiLing.daKaiSheBei(ShengXianZhuYeActivity.this)) {
             new ReadThread().start();
         }
@@ -113,10 +145,24 @@ public class ShengXianZhuYeActivity extends BaseActivity {
             @Override
             public void call(Notice notice) {
 
-                List<String> mDats = JieXiZhiLing.chuLiMqttMingLing(ShengXianZhuYeActivity.this, notice);
-                if (Integer.valueOf(mDats.get(0)) == ConstanceValue.CHAXUNSUOYOU) {
-                    getNet(device_ccid, menDiZhi, getKaiMenHeRenYuanZhuangTai(), "1", ChuLiShuJuClass.wuPinXinXi(greenDaoManager, Integer.parseInt(menDiZhi)));
-                } else if (Integer.valueOf(mDats.get(0)) == ConstanceValue.GENGXINJIAQIAN) {
+                OperateClass.YingJianXinXiModel yingJianXinXiModel = JieXiZhiLing.chuLiMqttMingLing(notice);
+                if (yingJianXinXiModel.mqtt_zhiling == ConstanceValue.CHAXUNSUOYOU) {
+
+                    /**
+                     *     /**
+                     *      * @param device_ccid               设备ccid
+                     *      * @param guiHao                    柜号
+                     *      * @param suoHao                    锁号
+                     *      * @param operate_type              操作类型
+                     *      * @param sf_type                   传1成功
+                     *      * @param huoHaoAndZhongLiangModels 传递数据
+                     *      */
+
+                    getNet(device_ccid, yingJianXinXiModel.guiMenDiZhi + "", yingJianXinXiModel.suoDiZhi + "",
+                            OperateClass.getOperateType(yingJianXinXiModel.guiMenDiZhi + "", yingJianXinXiModel.suoDiZhi + ""), "1",
+                            ChuLiShuJuClass.wuPinXinXi(greenDaoManager, yingJianXinXiModel.guiMenDiZhi, yingJianXinXiModel.suoDiZhi
+                            ));
+                } else if (yingJianXinXiModel.mqtt_zhiling == ConstanceValue.GENGXINJIAQIAN) {
                     getNetJiaQian();
                 }
             }
@@ -130,16 +176,21 @@ public class ShengXianZhuYeActivity extends BaseActivity {
         timeHandler = new TimeHandler();
         chuLiYingJianShujuHandler = new ChuLiYingJianShujuHandler();
 
-        // TODO: 2022-07-17 用过删除
         new ReadThread().start();
+        getPeiZhiBiaoNet();
         getNetJiaQian();
+        mDatas = new ArrayList<>();
+        initAdapter(rlvList, gouWuList);
 
-//        getSupportFragmentManager()
+        //        getSupportFragmentManager()
 //                .beginTransaction()
 //                .add(R.id.containerView, Video_BaseFragment.newInstance(Video.ORANGE_13.url))
 //                .commit();
-
+        Tools.getShouJiKaHao(ShengXianZhuYeActivity.this);
+        GPS gps = new GPS(this);
+        gps.startLocation();
     }
+
 
     private int k = 0;//循环遍历插入数据
 
@@ -181,19 +232,22 @@ public class ShengXianZhuYeActivity extends BaseActivity {
                             wuPinXinXiMoel.setShouJia(shangPinJieKouModel.getSelling_price());//商品售价
                             wuPinXinXiMoel.setHuiYuanJia(shangPinJieKouModel.getMembership_price());//商品会员价
                             wuPinXinXiMoel.setShangPinMingCheng(shangPinJieKouModel.getCs_wares_name());
+                            // TODO: 2022-07-31 柜地址
+                            wuPinXinXiMoel.setGuiDiZhi(shangPinJieKouModel.guiHao);//柜地址
                             wuPinXinXiMoel.setId((long) i);
-
 
                             int zhongLiang = Integer.parseInt(shangPinJieKouModel.getCs_wares_weight());
 
                             byte[] bytes = Tools.intToShort(zhongLiang);//把重量转换成两个字节型
 
+                            //
                             wuPinXinXiMoel.setZhongLiang1(String.valueOf(bytes[0]));
                             wuPinXinXiMoel.setZhongLiang2(String.valueOf(bytes[1]));
 
-
                             list.add(wuPinXinXiMoel);
 
+                            Log.i(TAG, wuPinXinXiMoel.getShouJia());
+                            Log.i(TAG, wuPinXinXiMoel.getHuiYuanJia());
                             try {
                                 YingJianZhiLing.xiaChuanDianZiJiaQian(wuPinXinXiMoel);
                                 Thread.sleep(20);
@@ -210,38 +264,69 @@ public class ShengXianZhuYeActivity extends BaseActivity {
     }
 
     /**
-     * @param device_ccid               设备id
-     * @param cs_door_numbaer           门id
-     * @param operate_type              1.用户：安卓屏开门响应 2.用户：开门时重量上传 3.用户：关门时重量上传
-     *                                  4.补货员：安卓屏开门响应 5.补货员：关门时重量上传 6.补货员：同步某个货道重量
-     * @param sf_type                   1.开门成功 2.开门失败（operate_type为1，3，4，5时）
-     * @param huoHaoAndZhongLiangModels [{"cs_scale_number":"02","cs_wares_weight":"1510"}]
-     *                                  cs_scale_number 货道号 cs_wares_weight 货道重量
+     * @param device_ccid               设备ccid
+     * @param guiHao                    柜号
+     * @param suoHao                    锁号
+     * @param operate_type              操作类型
+     * @param sf_type                   传1成功
+     * @param huoHaoAndZhongLiangModels 传递数据
      */
-    private void getNet(String device_ccid, String cs_door_numbaer, String operate_type,
+
+    private void getNet(String device_ccid, String guiHao, String suoHao, String operate_type,
                         String sf_type, List<HuoHaoAndZhongLiangModel> huoHaoAndZhongLiangModels) {
         Map<String, Object> map = new HashMap<>();
+
+        OperateClass.YingJianXinXiModel yingJianXinXiModel = OperateClass.getYingJianXinXi(guiHao, suoHao);
         map.put("code", "100054");
         map.put("key", Urls.key);
         map.put("device_ccid", device_ccid);
-        map.put("cs_door_number", String.format("%02d", Integer.valueOf(cs_door_numbaer)));
-        map.put("line_type", renYuanZhuagnTai);// 连接类型：1.用户 2.补货员
+        map.put("cs_door_number", String.format("%02d", yingJianXinXiModel.guiMenDiZhi));
+        map.put("line_type", yingJianXinXiModel.renYuanZhuagnTai);// 连接类型：1.用户 2.补货员
         map.put("operate_type", operate_type);
         map.put("sf_type", sf_type);
+        map.put("cs_card_number", yingJianXinXiModel.huiYuanKaHao);
         map.put("where", huoHaoAndZhongLiangModels);
-
         Gson gson = new Gson();
         Log.e("map_data", gson.toJson(map));
-        OkGo.<AppResponse<HuoHaoAndZhongLiangModel>>post(SHENGXIANGUI)
+        OkGo.<AppResponse<GouMaiWuPinModel.DataBean>>post(SHENGXIANGUI)
                 .tag(this)//
                 .upJson(gson.toJson(map))
-                .execute(new JsonCallback<AppResponse<HuoHaoAndZhongLiangModel>>() {
+                .execute(new JsonCallback<AppResponse<GouMaiWuPinModel.DataBean>>() {
                     @Override
-                    public void onSuccess(Response<AppResponse<HuoHaoAndZhongLiangModel>> response) {
+                    public void onSuccess(Response<AppResponse<GouMaiWuPinModel.DataBean>> response) {
+
+                        String str = OperateClass.getKaiMenHeRenYuanZhuangTai(String.valueOf(yingJianXinXiModel.guiMenDiZhi), String.valueOf(yingJianXinXiModel.suoDiZhi));
+
+                        if (str.equals("2") || str.equals("10")) {
+                            gouWuList = response.body().data.get(0).getData_list();
+                            containerView.setVisibility(View.VISIBLE);
+                            if (jieSuanListAdapter != null) {
+                                jieSuanListAdapter.notifyDataSetChanged();
+                            }
+                            tvZongjine.setText(response.body().data.get(0).getAll_money());
+                        }
+
 
                     }
                 });
     }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
 
     public class ChuLiYingJianShujuHandler extends Handler {
 
@@ -251,52 +336,87 @@ public class ShengXianZhuYeActivity extends BaseActivity {
             // 截取返回值中的体温数据
             byte[] bytes = (byte[]) msg.obj;
             byte zlm = bytes[2];
-
             Log.i("moni", "进入handler");
 
             switch ((int) zlm) {
 
-                case 1://柜门 开门
-                    int menDiZhi_KaiMen = bytes[3];//门地址
-                    int kaiGuanZhuangTai = bytes[4];//开关状态
-                    if (kaiGuanZhuangTai == 1) {//开
-                        menDiZhi = String.valueOf(menDiZhi_KaiMen);
-                        menZhuangTai = "1";
-                        Log.i("moni_handler", "开门地址:" + menDiZhi_KaiMen + "人员状态地址：" + kaiGuanZhuangTai);
-                        List<HuoHaoAndZhongLiangModel> huoHaoAndZhongLiangModels = ChuLiShuJuClass.wuPinXinXi(greenDaoManager, menDiZhi_KaiMen);
-                        getNet(device_ccid, String.valueOf(menDiZhi_KaiMen), getOperateType(), "1", huoHaoAndZhongLiangModels);
-                    } else if (kaiGuanZhuangTai == 2) {//关
-                        menZhuangTai = "2";
+                case 1://打开柜门
 
-                        Log.i("moni_handler", "开门地址:" + menDiZhi_KaiMen + "人员状态地址：" + kaiGuanZhuangTai + "关门");
-                        getNet(device_ccid, String.valueOf(menDiZhi_KaiMen), getOperateType(), "1", ChuLiShuJuClass.wuPinXinXi(greenDaoManager, menDiZhi_KaiMen));
+                    /**
+                     * 	内容	字节长度	说明
+                     * ZLM	1	1	指令码，柜门状态
+                     * DATA	2	1	地址，2号柜
+                     * 	1	1	地址，1号锁
+                     * 	1	1	1开状态，2关状态
+                     */
+                    String guiHao = String.valueOf(bytes[3]);//柜门地址
+                    String suoHao = String.valueOf(bytes[4]);//锁地址
+                    String kaiGuanZhuangTai = String.valueOf(bytes[5]);
+
+                    OperateClass.YingJianXinXiModel yingJianXinXiModel = OperateClass.gengXinJiBenXinXi(guiHao, suoHao, null, kaiGuanZhuangTai, null);
+
+
+                    if (kaiGuanZhuangTai.equals("1")) {//开
+                        List<HuoHaoAndZhongLiangModel> huoHaoAndZhongLiangModels = ChuLiShuJuClass.wuPinXinXi(greenDaoManager, Integer.parseInt(guiHao), Integer.parseInt(suoHao));
+
+                        /**
+                         *
+                         * @param device_ccid 设备ccid
+                         * @param guiHao 柜号
+                         * @param suoHao 锁号
+                         * @param operate_type 操作类型
+                         * @param sf_type 传1成功
+                         * @param huoHaoAndZhongLiangModels 传递数据
+                         */
+
+                        OperateClass.gengXinJiBenXinXi(guiHao, suoHao, null, "1", null);
+                        getNet(device_ccid, guiHao, suoHao, OperateClass.getOperateType(guiHao, suoHao), "1", huoHaoAndZhongLiangModels);
+
+
+                    } else if (kaiGuanZhuangTai.equals("2")) {//关
+
+                        List<HuoHaoAndZhongLiangModel> huoHaoAndZhongLiangModels = ChuLiShuJuClass.wuPinXinXi(greenDaoManager, Integer.parseInt(guiHao), Integer.parseInt(suoHao));
+                        OperateClass.gengXinJiBenXinXi(guiHao, suoHao, null, "2", null);
+                        getNet(device_ccid, guiHao, suoHao, OperateClass.getOperateType(guiHao, suoHao), "1", huoHaoAndZhongLiangModels);
+
+                        //关门后 隐藏结算页面
+                        containerView.setVisibility(View.GONE);
+
                     }
                     break;
                 case 3://上传的电子价签信息
-                    int state = bytes[3];//重量状态
-                    int menDiZhi_DianZiJiaQian = bytes[4];//门地址
+                    String guiDiZhi = String.valueOf(bytes[3]);//柜地址
+                    String suoDiZhi = String.valueOf(bytes[4]);//锁地址
 
+                    OperateClass.YingJianXinXiModel yingJianXinXiModel1 = OperateClass.gengXinJiBenXinXi(guiDiZhi, suoDiZhi, null, "2", null);
+
+
+                    //获得数据库基本信息
                     List<WuPinXinXiMoel> moels = greenDaoManager.mGoodsModelDao.loadAll();
-                    Log.i(TAG, "重量之前" + moels.get(17).getZhongLiang1());
-
+                    //解析获得现在的基本信息
                     List<WuPinXinXiMoel> moels1 = ChuLiShuJuClass.getMenHaoShuJu(bytes);
-                    Log.i(TAG, "重量之后" + moels.get(17).getZhongLiang1());
-                    if (state == 0) {
-                        //正常重量上传需要
-                        if (zhongLiangBianHua(moels, moels1)) {
-                            //如果完全一样什么都不做
-                        } else {
-                            //不一样 上传数据给后台
-                            if (renYuanZhuagnTai.equals("1")) {
-                                getNet(device_ccid, String.valueOf(menDiZhi_DianZiJiaQian), getKaiMenHeRenYuanZhuangTai(), "1", ChuLiShuJuClass.wuPinXinXi(greenDaoManager, menDiZhi_DianZiJiaQian));
-                            }
-                            greenDaoManager.insertAllData(moels1);
+
+
+                    //正常重量上传需要
+                    if (!zhongLiangBianHua(moels, moels1)) {
+                        //不一样 上传数据给后台
+                        if (yingJianXinXiModel1.renYuanZhuagnTai.equals("1")) {//用户状态下有变动传值
+                            /**
+                             *     /**
+                             *      * @param device_ccid               设备ccid
+                             *      * @param guiHao                    柜号
+                             *      * @param suoHao                    锁号
+                             *      * @param operate_type              操作类型
+                             *      * @param sf_type                   传1成功
+                             *      * @param huoHaoAndZhongLiangModels 传递数据
+                             *      */
+
+                            getNet(device_ccid, guiDiZhi, suoDiZhi, getKaiMenHeRenYuanZhuangTai(guiDiZhi, suoDiZhi), "1", ChuLiShuJuClass.wuPinXinXi(greenDaoManager, Integer.parseInt(guiDiZhi), Integer.parseInt(suoDiZhi)));
+
                         }
-                    } else if (state == 1) {
-                        getNet(device_ccid, String.valueOf(menDiZhi_DianZiJiaQian), "6", "1", ChuLiShuJuClass.wuPinXinXi(greenDaoManager, menDiZhi_DianZiJiaQian));
-                    } else if (state == 2) {
-                        getNet(device_ccid, String.valueOf(menDiZhi_DianZiJiaQian), "6", "1", ChuLiShuJuClass.wuPinXinXi(greenDaoManager, menDiZhi_DianZiJiaQian));
+                        greenDaoManager.insertAllData(moels1);
                     }
+
                     break;
 
                 case 4://指令码，请求柜门配置表
@@ -304,12 +424,15 @@ public class ShengXianZhuYeActivity extends BaseActivity {
                     break;
 
                 case 5://指令码，请求电子价签信息
-
-
+                    getNetJiaQian();
                     break;
 
                 case 6://指令码，上传全部重量
 
+                    break;
+
+                case 7://请求温度 消毒 开灯
+                    MqttZhiLing.postYingJian(Addr.ccidAddr, "m01.");
                     break;
 
                 default:
@@ -322,27 +445,31 @@ public class ShengXianZhuYeActivity extends BaseActivity {
 
     //请求柜门配置表
     private void getPeiZhiBiaoNet() {
-
         Map<String, Object> map = new HashMap<>();
-        map.put("code", "100055");
+        map.put("code", "100058");
         map.put("key", Urls.key);
         map.put("device_ccid", device_ccid);
         Gson gson = new Gson();
         Log.e("map_data", gson.toJson(map));
-        OkGo.<AppResponse<ShangPinLieBiaoModel.DataBean>>post(SHENGXIANGUI_SHANGPIN)
+        OkGo.<AppResponse<PeiZhiBiaoModel.DataBean>>post(SHENGXIANGUI_SHANGPIN)
                 .tag(this)//
                 .upJson(gson.toJson(map))
-                .execute(new JsonCallback<AppResponse<ShangPinLieBiaoModel.DataBean>>() {
+                .execute(new JsonCallback<AppResponse<PeiZhiBiaoModel.DataBean>>() {
                     @Override
-                    public void onSuccess(Response<AppResponse<ShangPinLieBiaoModel.DataBean>> response) {
+                    public void onSuccess(Response<AppResponse<PeiZhiBiaoModel.DataBean>> response) {
 
                         // TODO: 2022-07-25 配置表接口
                         List<String> list = new ArrayList<>();
-                        YingJianZhiLing.xiaChuanPeiZhiBiao(1, list);
+
+                        int list_length = Integer.parseInt(response.body().data.get(0).getDoor_count());
+                        for (int i = 0; i < response.body().data.get(0).getDoor_list().size(); i++) {
+                            list.add(response.body().data.get(0).getDoor_list().get(i).getCs_door_number());
+                        }
+                        //YingJianZhiLing.xiaChuanPeiZhiBiao(list_length, list);
                     }
 
                     @Override
-                    public void onError(Response<AppResponse<ShangPinLieBiaoModel.DataBean>> response) {
+                    public void onError(Response<AppResponse<PeiZhiBiaoModel.DataBean>> response) {
                         super.onError(response);
 
                     }
@@ -356,9 +483,12 @@ public class ShengXianZhuYeActivity extends BaseActivity {
             R.id.btn_huowu_zhengchang, R.id.btn_huowu_dange, R.id.btn_huowu_suoyou,
             R.id.btn_guanmen, R.id.btn_charu, R.id.btn_chaxun,
             R.id.btn_butong, R.id.btn_monifasong, R.id.btn_moni_buhuoyuan_kaimen, R.id.btn_moni_buhuoyuan_buhuo, R.id.btn_moni_buhuoyuan_guanmen
-            , R.id.btn_moni_buhuoyuan_qingling, R.id.btn_moni_buhuoyuan_jiaozhun})
+            , R.id.btn_moni_buhuoyuan_qingling, R.id.btn_moni_buhuoyuan_jiaozhun, R.id.btn_huiyuanka_kaimen})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.btn_huiyuanka_kaimen:
+                // getNet(device_ccid, "02", "7", "1", ChuLiShuJuClass.wuPinXinXi(greenDaoManager, 2));
+                break;
             case R.id.btn_moni_buhuoyuan_kaimen:
                 //补货员开门
                 break;
@@ -369,17 +499,20 @@ public class ShengXianZhuYeActivity extends BaseActivity {
                 //补货员关门
                 break;
             case R.id.btn_moni_buhuoyuan_qingling:
+                moniqingling();
                 //补货员清零
                 break;
             case R.id.btn_moni_buhuoyuan_jiaozhun:
                 //补货员校准
                 break;
             case R.id.btn_monifasong:
+                GPS gps = new GPS(this);
+                gps.startLocation();
 
+
+                Tools.getShouJiKaHao(ShengXianZhuYeActivity.this);
                 String str = "12345678".replaceAll("(.{2})", ":$1").substring(1);
-
                 String[] arr = str.split(":");
-
                 for (int i = 0; i < arr.length; i++) {
                     Log.i("YingJianZhiLing", arr[i]);
                 }
@@ -442,6 +575,9 @@ public class ShengXianZhuYeActivity extends BaseActivity {
 
     TimeHandler timeHandler;
     private boolean flag = true;
+    private int num = 0;
+
+    private int j = 0;//开门时间过于长的时候用于校验
 
     public class DingShiThread extends Thread {
         @Override
@@ -459,7 +595,34 @@ public class ShengXianZhuYeActivity extends BaseActivity {
                 message.obj = "aa";
                 //   timeHandler.sendEmptyMessage(1);
                 timeHandler.handleMessage(message);
-                Log.i(TAG, "Thread发送");
+                Log.i(TAG, "num数值:" + num);
+
+                if (num % 6 == 0) {
+                    MqttZhiLing.faSongG(Addr.ccidAddr);
+                    num = 0;
+                }
+                num = num + 1;
+
+
+                //关于异常处理
+//                if (menZhuangTai.equals("1")) {
+//                    if (renYuanZhuagnTai.equals("1") || renYuanZhuagnTai.equals("3")) {
+//                        if (j > 12) {
+//                            j = 0;
+//                            MqttZhiLing.baoJing(Addr.ccidAddr, menDiZhi, "aa", "02", "0101");
+//                        } else {
+//                            j = j + 1;
+//                        }
+//                    } else if (renYuanZhuagnTai.equals("2")) {
+//
+//                        if (j > 360) {
+//                            j = 0;
+//                            MqttZhiLing.baoJing(Addr.ccidAddr, menDiZhi, "aa", "02", "0101");
+//                        } else {
+//                            j = j + 1;
+//                        }
+//                    }
+//                }
 
 
             }
@@ -467,7 +630,6 @@ public class ShengXianZhuYeActivity extends BaseActivity {
     }
 
     private boolean isOpen = true;
-    private Handler handler;
 
     // TODO: 2022-07-17 模拟数据
     public static byte[] buffer_moni = new byte[1];//模拟数据
@@ -478,20 +640,15 @@ public class ShengXianZhuYeActivity extends BaseActivity {
             byte[] buffer = new byte[4096];
             while (isOpen) {
 
-                Log.i("moni_handler", "线程" +
-                        "开启" + "buffer_moni长度: " + buffer_moni.length);
                 int length = MyApp.driver.ReadData(buffer, 4096);
-                //  buffer = buffer_moni;
 
                 if (buffer_moni.length > 5) {
-                    //  String recv = toHexString(buffer, length);
                     Message msg = Message.obtain();
                     msg.what = 1;
                     msg.obj = buffer_moni;
                     chuLiYingJianShujuHandler.sendMessage(msg);
                     buffer_moni = new byte[1];
                 }
-
 
                 try {
                     Thread.sleep(30);
@@ -553,9 +710,11 @@ public class ShengXianZhuYeActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         flag = false;
-        thread.stop();
-        thread = null;
-
+        if (thread != null) {
+            flag = false;
+            thread.interrupt();
+            thread = null;
+        }
     }
 
 }

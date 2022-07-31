@@ -51,10 +51,10 @@ public class ShuJuMoNiUtils {
 
         byte[] bytes = new byte[8];
         bytes[0] = (byte) 0XAA;
-        bytes[1] = 1;
-        bytes[2] = 1;//柜门状态
-        bytes[3] = 1;//柜门地址
-        bytes[4] = 1;//柜门状态 1开 2 关
+        bytes[1] = 1;//位数
+        bytes[2] = 3;//指令
+        bytes[3] = 2;//门地址
+        bytes[4] = 2;//秤盘号
         ShengXianZhuYeActivity.buffer_moni = bytes;
 
     }

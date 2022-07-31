@@ -11,7 +11,8 @@ public class WuPinXinXiMoel {
     @Id(autoincrement = true)
     private Long id;
 
-    private String menDiZhi;//门地址
+    private String guiDiZhi;//柜地址
+    private String suoDiZhi;//门地址
     private String jiaQianDiZhi;//价签地址
     private String zhongLiang1;//重量1
     private String zhongLiang2;//重量2
@@ -21,12 +22,13 @@ public class WuPinXinXiMoel {
     private String shouJia;//售价
     private String huiYuanJia;//会员价
 
-    @Generated(hash = 8964145)
-    public WuPinXinXiMoel(Long id, String menDiZhi, String jiaQianDiZhi, String zhongLiang1,
-            String zhongLiang2, String shangPinZhongWenBianMa, String shangPinMingCheng,
-            String shouJia, String huiYuanJia) {
+    @Generated(hash = 1219876794)
+    public WuPinXinXiMoel(Long id, String guiDiZhi, String suoDiZhi, String jiaQianDiZhi,
+            String zhongLiang1, String zhongLiang2, String shangPinZhongWenBianMa,
+            String shangPinMingCheng, String shouJia, String huiYuanJia) {
         this.id = id;
-        this.menDiZhi = menDiZhi;
+        this.guiDiZhi = guiDiZhi;
+        this.suoDiZhi = suoDiZhi;
         this.jiaQianDiZhi = jiaQianDiZhi;
         this.zhongLiang1 = zhongLiang1;
         this.zhongLiang2 = zhongLiang2;
@@ -49,11 +51,11 @@ public class WuPinXinXiMoel {
     }
 
     public String getMenDiZhi() {
-        return this.menDiZhi;
+        return this.suoDiZhi;
     }
 
     public void setMenDiZhi(String menDiZhi) {
-        this.menDiZhi = menDiZhi;
+        this.suoDiZhi = menDiZhi;
     }
 
     public String getJiaQianDiZhi() {
@@ -110,6 +112,22 @@ public class WuPinXinXiMoel {
 
     public void setShangPinZhongWenBianMa(String shangPinZhongWenBianMa) {
         this.shangPinZhongWenBianMa = shangPinZhongWenBianMa;
+    }
+
+    public String getGuiDiZhi() {
+        return this.guiDiZhi;
+    }
+
+    public void setGuiDiZhi(String guiDiZhi) {
+        this.guiDiZhi = guiDiZhi;
+    }
+
+    public String getSuoDiZhi() {
+        return this.suoDiZhi;
+    }
+
+    public void setSuoDiZhi(String suoDiZhi) {
+        this.suoDiZhi = suoDiZhi;
     }
 
 

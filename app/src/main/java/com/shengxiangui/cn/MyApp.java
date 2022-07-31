@@ -8,6 +8,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.usb.UsbManager;
 
+import android.telephony.CarrierConfigManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -20,10 +21,12 @@ import com.sample.Utils;
 import com.shengxiangui.mqtt.Addr;
 import com.shengxiangui.mqtt.DingYueMqtt;
 import com.shengxiangui.mqtt.DoMqttValue;
+import com.shengxiangui.mqtt.MqttZhiLing;
 import com.shengxiangui.table.DaoMaster;
 import com.shengxiangui.table.DaoSession;
 import com.shengxiangui.table.GreenDaoManager;
 import com.shengxiangui.table.WuPinXinXiMoel;
+import com.shengxiangui.tool.GPS;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -63,6 +66,9 @@ public class MyApp extends Application {
                 (UsbManager) getSystemService(Context.USB_SERVICE), this,
                 ACTION_USB_PERMISSION);
         chuShiHuaShuJuKu();//初始化数据库
+        context = this;
+//        GPS gps = new GPS(getApplicationContext());
+//        gps.startLocation();
 
     }
 
@@ -111,7 +117,7 @@ public class MyApp extends Application {
             if (isAppProcess()) {
                 AndMqtt.getInstance().init(this);
                 MqttConnect builder = new MqttConnect();
-                builder.setClientId(UserId)//连接服务器
+                builder.setClientId(Addr.ccidAddr)//连接服务器
                         .setPort(9096)
                         .setAutoReconnect(true)
                         .setCleanSession(true)
@@ -127,6 +133,7 @@ public class MyApp extends Application {
                     public void connectComplete(boolean reconnect, String serverURI) {
                         Log.i("Rair", "(MainActivity.java:29)-connectComplete:-&gt;连接完成");
                         DingYueMqtt.hardWareMqtt();
+                        MqttZhiLing.faSongG(Addr.ccidAddr);//每次连接完成发送 g.
                     }
 
                     @Override

@@ -1,15 +1,8 @@
 package com.shengxiangui.mqtt;
 
-import android.content.Context;
-
 import com.shengxiangui.cn.ConstanceValue;
 import com.shengxiangui.cn.Notice;
-
-import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.List;
-
-import static com.shengxiangui.cn.model.OperateClass.renYuanZhuagnTai;
+import com.shengxiangui.cn.model.OperateClass;
 
 public class JieXiZhiLing {
 
@@ -38,76 +31,26 @@ public class JieXiZhiLing {
      *
      * @param notice
      */
-    public static List<String> chuLiMqttMingLing(Context context, Notice notice) {
+    public static OperateClass.YingJianXinXiModel chuLiMqttMingLing(Notice notice) {
+        OperateClass.YingJianXinXiModel yingJianXinXiModel = (OperateClass.YingJianXinXiModel) notice.content;
         if (notice.type == ConstanceValue.KAIMEN) {
-
-            List<String> list = (List<String>) notice.content;
-            list.get(1);//柜门号
-            list.get(2);//身份
-
-            renYuanZhuagnTai = Integer.valueOf(list.get(2) + "") + "";
-            YingJianZhiLing.kaiGui(Integer.valueOf(list.get(1)));//开柜
-
-
-            return list;
-
+            YingJianZhiLing.kaiGui(Integer.valueOf(yingJianXinXiModel.guiMenDiZhi), Integer.valueOf(yingJianXinXiModel.suoDiZhi));//开柜
+            return yingJianXinXiModel;
         } else if (notice.type == ConstanceValue.QINGLING) {//清零功能
-
-            List<String> list = (List<String>) notice.content;
-            Integer data0 = Integer.valueOf(list.get(1));//门编号
-            Integer data1 = Integer.valueOf(list.get(2));//秤盘编号
-
-            YingJianZhiLing.xiaChuanQingLing(data0, data1);//清零功能
-
-            return list;
-
+            YingJianZhiLing.xiaChuanQingLing(Integer.valueOf(yingJianXinXiModel.guiMenDiZhi), Integer.valueOf(yingJianXinXiModel.suoDiZhi), Integer.valueOf(yingJianXinXiModel.chengPanHao));//清零功能
+            return yingJianXinXiModel;
         } else if (notice.type == ConstanceValue.JIAOZHUN) {
-
-            /**
-             *        list.add(String.valueOf(ConstanceValue.JIAOZHUN));
-             *                 list.add(menBianHao);
-             *                 list.add(chengPanBianHao);
-             *                 list.add(dangQianZhongLiang);
-             *                 list.add(jiaoZhunZhongLiang);
-             */
-            List<String> list = (List<String>) notice.content;
-            Integer data0 = Integer.valueOf(list.get(1));//门编号
-            Integer data1 = Integer.valueOf(list.get(2));//秤盘编号
-            Integer data2 = Integer.valueOf(list.get(3));//当前重量
-            Integer data3 = Integer.valueOf(list.get(4));//校准重量
-            YingJianZhiLing.xiaChuanJiaoZhun(data0, data1, data3);//校准功能
-            return list;
-
+            YingJianZhiLing.xiaChuanJiaoZhun(yingJianXinXiModel.guiMenDiZhi, yingJianXinXiModel.suoDiZhi, yingJianXinXiModel.chengPanHao, yingJianXinXiModel.jiaoZhunZhongLiang);//校准功能
+            return yingJianXinXiModel;
         } else if (notice.type == ConstanceValue.CHAXUNDANGE) {
-
-            List<String> list = (List<String>) notice.content;
-            Integer data0 = Integer.valueOf(list.get(0));//门编号
-            Integer data1 = Integer.valueOf(list.get(1));//秤盘编号
-
-            YingJianZhiLing.chaXunDanGe(1, data0);
-            //访问接口上传实时重量
-
-            return list;
-
+            YingJianZhiLing.chaXunDanGe(yingJianXinXiModel.guiMenDiZhi, yingJianXinXiModel.suoDiZhi, yingJianXinXiModel.chengPanHao);
         } else if (notice.type == ConstanceValue.CHAXUNSUOYOU) {
-            //访问接口上传实时重量
-            List<String> list = (List<String>) notice.content;
-            Integer data0 = Integer.valueOf(list.get(0));//门编号
-            // YingJianZhiLing.chaXunDanGe(2, data0);
-
-
-            return list;
-        } else if (notice.type == ConstanceValue.CHAXUNSUOYOU) {
-            //访问接口上传实时重量
-            List<String> list = (List<String>) notice.content;
-            Integer data0 = Integer.valueOf(list.get(0));//门编号
-            // YingJianZhiLing.chaXunDanGe(2, data0);
-
-
-            return list;
-        } else {
-            return (List<String>) notice.content;
+            YingJianZhiLing.chaXunSuoYou(yingJianXinXiModel.guiMenDiZhi, yingJianXinXiModel.suoDiZhi);
+        } else if (notice.type == ConstanceValue.YINGJIANJICHUXINXI) {
+            YingJianZhiLing.yingJianXinXi(yingJianXinXiModel.guiMenDiZhi, yingJianXinXiModel.duShuDi, yingJianXinXiModel.duShuGao, yingJianXinXiModel.dengKaiGuanZhuangTai, yingJianXinXiModel.xiaoDuZhuangTai);
+            return yingJianXinXiModel;
         }
+        return yingJianXinXiModel;
     }
 
 

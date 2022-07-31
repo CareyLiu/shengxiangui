@@ -67,6 +67,8 @@ public class ShangPinJieKouModel {
         private String cs_door_number;
         private String membership_price;
 
+        public String guiHao;//柜号
+
         public String getSelling_price() {
             return selling_price;
         }

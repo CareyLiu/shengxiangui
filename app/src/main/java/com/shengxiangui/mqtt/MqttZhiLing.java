@@ -10,6 +10,7 @@ import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
 import java.util.List;
+
 //服务器软件操作
 public class MqttZhiLing {
 
@@ -94,7 +95,25 @@ public class MqttZhiLing {
 
     }
 
-    public void publish(String topic, String msg) {
+    public static void publish(String topic, String msg) {
+        AndMqtt.getInstance().publish(new MqttPublish()
+                .setMsg(msg)
+                .setQos(2).setRetained(false)
+                .setTopic(topic), new IMqttActionListener() {
+            @Override
+            public void onSuccess(IMqttToken asyncActionToken) {
+                Log.i("Rair", "(CAR_NOTIFY.java:79)-onSuccess:-&gt;发布成功" + "k001 我是在类里面订阅的");
+
+            }
+
+            @Override
+            public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                Log.i("Rair", "(MainActivity.java:84)-onFailure:-&gt;发布失败");
+            }
+        });
+    }
+
+    public static void publish_msg(String topic, String msg, String push) {
         AndMqtt.getInstance().publish(new MqttPublish()
                 .setMsg(msg)
                 .setQos(2).setRetained(false)
@@ -301,5 +320,50 @@ public class MqttZhiLing {
         publish(topic, zhiLing);
 
     }
+
+    /**
+     * 给硬件发送心跳
+     *
+     * @param topic
+     */
+    public static void faSongG(String topic) {
+        String zhiling = "g.";
+        publish(topic, zhiling);
+    }
+
+
+    /**
+     * 请求码	r	1
+     * 01	货柜	2
+     * 01	货道（没有货道传aa）	2
+     * 01	何种异常：01.交易异常 02.门异常	2
+     * 01	0101 交易异常-柜门未关闭（6分钟未关闭，补货员是30分钟未关闭）
+     * 0102 交易异常-柜门未关闭，且重量减少（记录后续使用）
+     * 0201 门异常-异常开门（开门失败）
+     * 0202 门异常-异常关门 (关门失败)	4
+     *
+     * @param topic       主题
+     * @param huoGui      货柜
+     * @param huoDao      货道
+     * @param yiChang     异常
+     * @param juTiYiChang 具体异常
+     */
+    public static void baoJing(String topic, String huoGui, String huoDao, String yiChang
+            , String juTiYiChang) {
+        String zhili = "r" + huoGui + huoDao + yiChang + juTiYiChang;
+        publish(topic, zhili);
+    }
+
+    /**
+     * 请求硬件基本信息
+     *
+     * @param topic
+     * @param zhiLing m01.
+     */
+    public static void postYingJian(String topic, String zhiLing) {
+        String zhili = zhiLing;
+        publish(topic, zhili);
+    }
+
 
 }

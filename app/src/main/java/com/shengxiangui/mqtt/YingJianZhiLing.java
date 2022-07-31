@@ -9,15 +9,18 @@ import android.widget.Toast;
 
 import com.shengxiangui.cn.MyApp;
 import com.shengxiangui.table.WuPinXinXiMoel;
+import com.shengxiangui.tool.Tools;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.shengxiangui.tool.Tools.chuLiZiFu;
 
 //硬件的操作
 public class YingJianZhiLing {
 
     YingJianZhiLing yingJianZhiLing = null;
+
 
     public YingJianZhiLing getInstance() {
 
@@ -29,7 +32,7 @@ public class YingJianZhiLing {
         }
     }
 
-    public static int baudRate = 9600;//波特率
+    public static int baudRate = 115200;//波特率
     public static byte baudRate_byte;
     public static byte stopBit = 1;//停止位
     public static byte dataBit = 8;//数据位
@@ -89,14 +92,16 @@ public class YingJianZhiLing {
 
     /**
      * 开柜门
+     * <p>
+     * guiMenHao        柜门号
+     * shiFouShiHuiYuan 是否是会员 1不是会员 2是会员
      *
-     * @param guiMenHao        柜门号
-     * @param shiFouShiHuiYuan 是否是会员 1不是会员 2是会员
      * @return
      */
-    public static byte[] kaiGui(int guiMenHao) {
-        byte[] DATA = new byte[1];
+    public static byte[] kaiGui(int guiMenHao, int suoHao) {
+        byte[] DATA = new byte[2];
         DATA[0] = (byte) guiMenHao;
+        DATA[1] = (byte) suoHao;
         //   DATA[1] = (byte) shiFouShiHuiYuan;
         return caoZuo(1, DATA);
     }
@@ -113,92 +118,131 @@ public class YingJianZhiLing {
 
     /**
      * 下传电子价签
-     *
-     * @param menDiZhi          门地址
-     * @param jiaQianDiZhi      价签地址
-     * @param jiaGe1            价格1
-     * @param jiaGe2            价格2
-     * @param hanZiChuanChangDu 汉字码长度
-     * @param hanZiChuanNeirong 汉字码
-     * @return
+     * <p>
+     * menDiZhi          门地址
+     * jiaQianDiZhi      价签地址
+     * jiaGe1            价格1
+     * jiaGe2            价格2
+     * hanZiChuanChangDu 汉字码长度
+     * hanZiChuanNeirong 汉字码
      */
     public static byte[] xiaChuanDianZiJiaQian(WuPinXinXiMoel wuPinXinXiMoel) {
-        byte[] DATA = new byte[wuPinXinXiMoel.getShangPinZhongWenBianMa().length() / 2 + 5];
+        byte[] DATA = new byte[wuPinXinXiMoel.getShangPinZhongWenBianMa().length() / 2 + 7];
         DATA[0] = Byte.parseByte(wuPinXinXiMoel.getMenDiZhi());
         DATA[1] = Byte.parseByte(wuPinXinXiMoel.getJiaQianDiZhi());
-        DATA[2] = Byte.parseByte(wuPinXinXiMoel.getShouJia());
-        DATA[3] = Byte.parseByte(wuPinXinXiMoel.getHuiYuanJia());
-        DATA[4] = (byte) wuPinXinXiMoel.getShangPinZhongWenBianMa().length();//汉字串的长度
+        DATA[2] = chuLiZiFu(wuPinXinXiMoel.getShouJia())[0];
+        DATA[3] = chuLiZiFu(wuPinXinXiMoel.getShouJia())[1];
+        DATA[4] = chuLiZiFu(wuPinXinXiMoel.getHuiYuanJia())[0];
+        DATA[5] = chuLiZiFu(wuPinXinXiMoel.getHuiYuanJia())[1];
+        DATA[6] = (byte) wuPinXinXiMoel.getShangPinZhongWenBianMa().length();//汉字串的长度
 
 
         String str = wuPinXinXiMoel.getShangPinZhongWenBianMa().replaceAll("(.{2})", ":$1").substring(1);
 
         String[] arr = str.split(":");
 
+        // TODO: 2022-07-27 中文编码位数
+        if (arr.length % 2 == 1) {
+
+            //Toast.makeText(MyApp.context, "后台中文编码错误，请检查位数", Toast.LENGTH_SHORT).show();
+            return caoZuo(3, DATA);
+        }
+
+
         for (int i = 0; i < arr.length; i++) {
             Log.i("YingJianZhiLing", arr[i]);
-            DATA[i + 5] = Byte.parseByte(arr[i]);
+            DATA[i + 7] = Byte.parseByte(arr[i]);
         }
 
         return caoZuo(3, DATA);
 
     }
 
+
     /**
-     * 查询单个
-     *
-     * @param state   0正常取数据查询所有1查询单个 2查询所有
-     * @param menDiZh 地址，2号柜门
+     * @param guiDiZhi      柜地址
+     * @param suoDiZHi      锁地址
+     * @param chengPanDiZhi 秤盘地址
      * @return
      */
-    public static byte[] chaXunDanGe(int state, int menDiZh) {
-        byte[] DATA = new byte[2];
-        DATA[0] = (byte) state;
-        DATA[1] = (byte) menDiZh;
+    public static byte[] chaXunDanGe(int guiDiZhi, int suoDiZHi, int chengPanDiZhi) {
+        byte[] DATA = new byte[3];
+        DATA[0] = (byte) guiDiZhi;
+        DATA[1] = (byte) suoDiZHi;
+        DATA[2] = (byte) chengPanDiZhi;
+
+        return caoZuo(5, DATA);
+    }
+
+
+    /**
+     * 查询所有地址
+     *
+     * @param guiDiZhi 柜地址
+     * @param suoDiZHi 锁地址
+     * @return
+     */
+    public static byte[] chaXunSuoYou(int guiDiZhi, int suoDiZHi) {
+        byte[] DATA = new byte[3];
+        DATA[0] = (byte) guiDiZhi;
+        DATA[1] = (byte) suoDiZHi;
 
         return caoZuo(6, DATA);
     }
 
     /**
-     * 上传电子价签
+     * 下传清零
      *
-     * @param menDiZhi     门地址
+     * @param guiDiZhi     柜地址
+     * @param suoDiZhi     锁地址
      * @param jiaQianDiZhi 价签地址
      * @return
      */
-    public static byte[] xiaChuanQingLing(int menDiZhi, int jiaQianDiZhi) {
+    public static byte[] xiaChuanQingLing(int guiDiZhi, int suoDiZhi, int jiaQianDiZhi) {
         byte[] DATA = new byte[2];
-        DATA[0] = (byte) menDiZhi;
-        DATA[1] = (byte) jiaQianDiZhi;
+        DATA[0] = (byte) guiDiZhi;
+        DATA[1] = (byte) suoDiZhi;
+        DATA[2] = (byte) jiaQianDiZhi;
         return caoZuo(3, DATA);
     }
 
+
     /**
-     * 上传电子价签
-     *
-     * @param menDiZhi   门地址
-     * @param zhongLiang 重量
+     * @param guiDiZhi           柜地址
+     * @param suoDiZhi           锁地址
+     * @param chengPanDiZhi      秤盘地址
+     * @param jiaoZhunZhongLiang 校准重量
      * @return
      */
-    public static byte[] xiaChuanJiaoZhun(int menDiZhi, int chengPanBianHao, int zhongLiang) {
-        byte[] DATA = new byte[2];
-        DATA[0] = (byte) menDiZhi;
-        DATA[1] = (byte) chengPanBianHao;
-        DATA[2] = (byte) zhongLiang;
+    public static byte[] xiaChuanJiaoZhun(int guiDiZhi, int suoDiZhi, int chengPanDiZhi, int jiaoZhunZhongLiang) {
+        byte[] DATA = new byte[5];
+        DATA[0] = (byte) guiDiZhi;
+        DATA[1] = (byte) suoDiZhi;
+        DATA[2] = (byte) chengPanDiZhi;
+
+        byte[] bytes = Tools.intToShort(jiaoZhunZhongLiang);//把重量转换成两个字节型
+        DATA[3] = bytes[0];
+        DATA[4] = bytes[1];
 
         return caoZuo(3, DATA);
     }
 
+
     /**
-     * @param guiMenShuLiang   柜门数量
-     * @param biaoQianShuLiang 标签数量
+     * 获取配置表
+     * @param guiMenShuLiang 柜门列表
+     * @param suoList 锁列表
+     * @param biaoQianShuLiang 标签列表具体的
      * @return
      */
-    public static byte[] xiaChuanPeiZhiBiao(int guiMenShuLiang, List<String> biaoQianShuLiang) {
-        byte[] DATA = new byte[biaoQianShuLiang.size() + 1];
+    public static byte[] xiaChuanPeiZhiBiao(int guiMenShuLiang, List<String> suoList, List<String> biaoQianShuLiang) {
+        byte[] DATA = new byte[suoList.size() + biaoQianShuLiang.size() + 1];
         DATA[0] = (byte) guiMenShuLiang;
+        for (int i = 0; i < suoList.size(); i++) {
+            DATA[i + 1] = Byte.parseByte(suoList.get(i));
+        }
         for (int i = 0; i < biaoQianShuLiang.size(); i++) {
-            DATA[i + 1] = Byte.parseByte(biaoQianShuLiang.get(i));
+            DATA[i + suoList.size()] = Byte.parseByte(biaoQianShuLiang.get(i));
         }
         return caoZuo(7, DATA);
     }
@@ -224,9 +268,11 @@ public class YingJianZhiLing {
 
         byte[] to_send = openDevice((byte) 0x99, (byte) N, (byte) ZLM, DATA, (byte) LRCH, (byte) LRCL);
 
+        Log.i("YingJianZhiLing", Arrays.toString(to_send));
 
         //写数据，第一个参数为需要发送的字节数组，第二个参数为需要发送的字节长度，返回实际发送的字节长度
-        //int retval = MyApp.driver.WriteData(to_send, to_send.length);
+        int retval = MyApp.driver.WriteData(to_send, to_send.length);
+
         return to_send;
 
     }
@@ -257,6 +303,35 @@ public class YingJianZhiLing {
 
 
         return bytes;
+    }
+
+    /**
+     * @param guiMenHao 柜门号
+     * @param wenDu_di  温度低
+     * @param wenDu_gao 温度高
+     * @param kaiDeng   开灯
+     * @param xiaoDu    消毒
+     * @return
+     */
+    public static byte[] yingJianXinXi(int guiMenHao, int wenDu_di, int wenDu_gao, int kaiDeng, int xiaoDu) {
+        byte[] DATA = new byte[3];
+
+        DATA[0] = (byte) guiMenHao;
+        if (wenDu_di == 0) {
+            DATA[1] = (byte) 255;
+        } else {
+            DATA[1] = (byte) wenDu_di;
+        }
+
+        if (wenDu_gao == 0) {
+            DATA[2] = (byte) 255;
+        } else {
+            DATA[2] = (byte) ((byte) wenDu_gao | 0x80);
+        }
+        DATA[3] = (byte) kaiDeng;
+        DATA[3] = (byte) xiaoDu;
+
+        return caoZuo(10, DATA);
     }
 
 

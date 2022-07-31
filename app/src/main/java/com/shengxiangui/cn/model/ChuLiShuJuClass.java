@@ -18,19 +18,22 @@ public class ChuLiShuJuClass {
     public final String TAG = ChuLiShuJuClass.class.getSimpleName();
 
     /**
-     * 从数据库里拿出数据进行整合，上传重量实时数据状态给后台
+     * 更新物品信息
      *
      * @param greenDaoManager
+     * @param guiDiZhi
+     * @param suoDiZhi
      * @return
      */
-    public static List<HuoHaoAndZhongLiangModel> wuPinXinXi(GreenDaoManager greenDaoManager, int menDiZhi) {
+    public static List<HuoHaoAndZhongLiangModel> wuPinXinXi(GreenDaoManager greenDaoManager, int guiDiZhi, int suoDiZhi) {
 
         List<WuPinXinXiMoel> moels = greenDaoManager.mGoodsModelDao.loadAll();
         List<HuoHaoAndZhongLiangModel> mDatas = new ArrayList<>();
         for (int i = 0; i < moels.size(); i++) {
-            if (menDiZhi == Integer.valueOf(moels.get(i).getMenDiZhi())) {
+            if (guiDiZhi == Integer.valueOf(moels.get(i).getMenDiZhi()) && suoDiZhi == Integer.valueOf(moels.get(i).getSuoDiZhi())) {
                 HuoHaoAndZhongLiangModel huoHaoAndZhongLiangModel = new HuoHaoAndZhongLiangModel();
                 huoHaoAndZhongLiangModel.cs_scale_number = moels.get(i).getJiaQianDiZhi();
+
                 byte[] bytes = new byte[2];
                 bytes[0] = Byte.parseByte(moels.get(i).getZhongLiang1());
                 bytes[1] = Byte.parseByte(moels.get(i).getZhongLiang2());
@@ -54,27 +57,17 @@ public class ChuLiShuJuClass {
         //打印整合数据之前的数据库数据
         int zhongLiangZhuangTai = bytes[3];//重量状态
         String menDiZhi = String.valueOf(bytes[4]);//门地址
-
-
-        List<WuPinXinXiMoel> wuPinXinXiMoels = new ArrayList<>();
-
-        wuPinXinXiMoels = GreenDaoManager.mGoodsModelDao.loadAll();
-
+        List<WuPinXinXiMoel> wuPinXinXiMoels = GreenDaoManager.mGoodsModelDao.loadAll();
 
         List<String> zhongLiangList = new ArrayList<>();
+
         for (int i = 5; i < bytes.length; i++) {
             if (i % 2 == 1) {
                 String var1 = String.valueOf(bytes[i]);
                 String var2 = String.valueOf(bytes[i + 1]);
 
-                if (var1.length() == 1) {
-                    var1 = "0" + var1;
-                }
 
-                if (var2.length() == 1) {
-                    var2 = "0" + var2;
-                }
-                zhongLiangList.add(var1 + var2);
+                zhongLiangList.add(var1 + "." + var2);
             }
 
         }
@@ -88,11 +81,10 @@ public class ChuLiShuJuClass {
 
                 for (int j = 0; j < zhongLiangList.size(); j++) {
 
-                    String var1 = zhongLiangList.get(j).substring(0, 2);
-                    String var2 = zhongLiangList.get(j).substring(2, 4);
+                    String[] arr = zhongLiangList.get(j).split("\\.");
 
-                    wuPinXinXiMoels.get(i + j).setZhongLiang1(var1);
-                    wuPinXinXiMoels.get(i + j).setZhongLiang2(var2);
+                    wuPinXinXiMoels.get(i + j).setZhongLiang1(arr[0]);
+                    wuPinXinXiMoels.get(i + j).setZhongLiang2(arr[1]);
 
                 }
                 break;

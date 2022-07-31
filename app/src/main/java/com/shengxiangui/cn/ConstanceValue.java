@@ -31,4 +31,5 @@ public interface ConstanceValue {
     int MONITONGBUSUOYOUCHENGPAN = 0x100014;//模拟同步所有秤盘
 
     int GENGXINJIAQIAN = 0x100015;//更新价签
+    int YINGJIANJICHUXINXI = 0x100016;//基本信息 灯 温度和消毒
 }

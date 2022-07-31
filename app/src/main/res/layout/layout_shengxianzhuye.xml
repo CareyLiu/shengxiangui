@@ -5,7 +5,6 @@
     android:background="@mipmap/shengxiangui_bg">
 
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -315,15 +314,108 @@
             android:layout_marginTop="15dp"
             android:text="模拟发送_补货员校准" />
 
+        <Button
+            android:id="@+id/btn_huiyuanka_kaimen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="会员卡开门" />
+
     </LinearLayout>
 
+
     <LinearLayout
-        android:orientation="vertical"
+
         android:id="@+id/containerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="400dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="100dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginBottom="35dp"
+        android:background="@drawable/zhongjian_beijing"
+        android:orientation="vertical"
+        android:visibility="gone">
 
 
+        <TextView
+            android:id="@+id/tv_zhangdanjiesuan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="13dp"
+            android:text="结算账单"
+            android:textColor="#ff009500"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="13dp"
+            android:gravity="center"
+            android:text="@string/xuxian"
+            android:textColor="#009500"
+            android:textSize="5sp">
+
+        </TextView>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rlv_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/tv_zhangdanjiesuan"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="13dp"
+            android:gravity="center"
+            android:text="@string/xuxian"
+            android:textColor="#009500"
+            android:textSize="5sp">
+
+        </TextView>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="30dp"
+                android:layout_marginBottom="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="合计: "
+                    android:textColor="#ff333333"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/tv_zongjine"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="￥456"
+                    android:textColor="#ffff0000"
+                    android:textSize="24sp" />
+            </LinearLayout>
+        </RelativeLayout>
 
 
     </LinearLayout>

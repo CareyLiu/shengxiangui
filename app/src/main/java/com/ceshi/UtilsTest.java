@@ -9,6 +9,10 @@ import com.sample.Utils;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.subjects.AsyncSubject;
+
 public class UtilsTest {
 
     @Before
@@ -19,17 +23,42 @@ public class UtilsTest {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Test
     public void isEmpty() {
-        byte[] bytes = intToShort(65535);
+        // 注意: 不要使用just(T)、from(T)、create(T)来使用Subject，因为会把Subject转换为Obserable
+        // 无论订阅的时候AsyncSubject是否Completed，均可以收到最后一个值的回调
+//        String s = new String("123") + new String("123");
+//        s.intern();
+//        String s1 = "123123";
+//        System.out.println(s == s1);
+
+
+
+
+        byte[] bytes = intToShort(200);
 
         System.out.println(bytes[0]);
         System.out.println(bytes[1]);
 
 
-        System.out.println(shortToInt(bytes[0], bytes[1]));
 
-        System.out.println((byte) 500000);
+        String str = String.valueOf(shortToInt(bytes[0], bytes[1]));
+        System.out.println(str);
 
 
+
+    }
+
+
+    public static byte[] chuLiZiFu(String str) {
+        String[] arr = str.split(".");
+
+
+//
+        byte[] bytes = new byte[2];
+//
+//
+//        bytes[0] = Byte.parseByte(arr[0]);
+//        bytes[1] = Byte.parseByte(arr[1]);
+        return bytes;
     }
 
     public static byte[] intToShort(int num) {
